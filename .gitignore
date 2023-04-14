@@ -1,4 +1,20 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+#Jupyter Notebook cache folders
+*/.ipynb_checkpoints/*
+*/.ipynb_checkpoints/
+/.ipynb_checkpoints/
+
+#dataset files
+*.zip
+*.npy
+
+#model files
+*.pt
+
+#images
+*.jpeg
+
+
+#chacke file draw.io
+
+*.bkp
+*.dtmp
