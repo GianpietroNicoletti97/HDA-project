@@ -14,7 +14,10 @@
 *.jpeg
 
 
-#chacke file draw.io
+#cache file draw.io
 
 *.bkp
 *.dtmp
+
+#dataset folder
+/dataset
