@@ -20,4 +20,5 @@
 *.dtmp
 
 #dataset folder
-/dataset
+/dataset/splitted
+/dataset/unsplitted
