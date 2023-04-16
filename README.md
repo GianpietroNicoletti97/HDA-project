@@ -19,3 +19,21 @@ Generate your Token on GitHub following this [guide](https://docs.github.com/en/
    `git config --global user.name "<YourUsername>"`
 
    `git config --global user.email "<YourEmail>"`
+
+  ### Usual development cycle
+  
+  Open a command promp in the repository of the project
+  `git pull` in order to update the repository.
+  
+  Edit your code.
+  
+  `git status` to check the files that was modified.
+  
+  `git add .` to add all the file or, better, `git add <filename>` (one for each file to add).
+  
+  `git status` to check the files added.
+  
+  `git commit -m "message"` to add a message to the file to push.
+  
+  `git push` to update the remote repository.
+  
