@@ -37,3 +37,8 @@ Generate your Token on GitHub following this [guide](https://docs.github.com/en/
   
   `git push` to update the remote repository.
   
+  If you need to restored a file from the repository
+  
+  `git restore <filename>`
+  
+  
