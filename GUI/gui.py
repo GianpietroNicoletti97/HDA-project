@@ -145,12 +145,114 @@ test_labels_dir = os.path.join(data_dir,"test","labels","test.json")
 with open(test_labels_dir) as f:
     test_labels = json.load(f)#labels
 
+
 test_dataset = HDAdatasetPatches(test_dir,test_dir_patches,test_labels,train = False,
+                          grayscale=grayscale,fft=fft)
+
+### VALIDATION DATASET
+val_dir = os.path.join(data_dir,"val","images")#images
+val_dir_patches = os.path.join(data_dir,"val","images_patch")#patches
+val_labels_dir = os.path.join(data_dir,"val","labels","val.json")
+with open(val_labels_dir) as f:
+    val_labels = json.load(f)#labels
+
+val_dataset = HDAdatasetPatches(val_dir,val_dir_patches,val_labels,train = False,
+                          grayscale=grayscale,fft=fft)
+
+### TRAIN DATASET
+train_dir = os.path.join(data_dir,"train","images")#images
+train_dir_patches = os.path.join(data_dir,"train","images_patch")#patches
+train_labels_dir = os.path.join(data_dir,"train","labels","train.json")
+with open(train_labels_dir) as f:
+    train_labels = json.load(f)#labels
+
+train_dataset = HDAdatasetPatches(train_dir,train_dir_patches,train_labels,train = False,
                           grayscale=grayscale,fft=fft)
 
 classes = ["CLL", "FL", "MCL"]
 id_to_name = {0:"CLL",1:"FL",2:"MCL"}
 name_to_id = {"CLL":0,"FL":1,"MCL":2}
+
+def plot_classification(dataset, idx):
+    
+    """
+      Function used to plot the classification for a sample using only the count of the prediction of the patches for each image
+
+      Parameters
+      ----------
+        dataset : HDAdatasetPatches object
+            Object containing the dataset
+
+        idx : int
+            index of the dataset to compute e plot the prediction 
+    """
+    
+    fig = plt.figure(constrained_layout=True,figsize=(20,20))
+    gs = fig.add_gridspec(2,10)
+    gs2 = gs[1,:].subgridspec(4,10)
+
+    pred=[]
+    labels = torch.tensor(dataset[idx][1]).to(device)
+    true_image_label = labels.to("cpu").detach().numpy().argmax(axis=1)[0]
+
+    count = {0:0,1:0,2:0}
+
+    for i,patch in enumerate(dataset[idx][0]):
+
+        ax = fig.add_subplot(gs2[i])
+
+
+        img = torch.tensor(patch).to(device)
+
+        rec_img,pred_labels= autoencoder(img)  
+
+
+        curr = pred_labels.to("cpu").detach().numpy().argmax(axis=1)[0]
+
+        count[curr] = count[curr]+1
+
+        pred.append(curr)
+
+        ax.set_title(" pred: "+r"$\bf{" + id_to_name[curr]  + "}$",fontsize=15)
+
+        imagergb = cv2.cvtColor(patch.reshape(3,128,128).transpose(1,2,0), cv2.COLOR_BGR2RGB)
+        ax.imshow(imagergb)
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+        if(true_image_label == curr):
+            for axis in ['top', 'bottom', 'left', 'right']:
+                ax.spines[axis].set_linewidth(4)  # change width
+                ax.spines[axis].set_color('green')    # change color
+        else:
+            for axis in ['top', 'bottom', 'left', 'right']:
+                ax.spines[axis].set_linewidth(4)  # change width
+                ax.spines[axis].set_color('red')    # change color
+
+    final_image_label = max(set(pred), key=pred.count) 
+
+
+    ax = fig.add_subplot(gs[0,:])
+    ax.set_title("true: "+r"$\bf{" + id_to_name[true_image_label]  + "}$"+ " pred: "+r"$\bf{" + id_to_name[final_image_label]  + "}$", fontsize=15)
+    ax.imshow(dataset[idx][2])
+
+    ax.text(dataset[ids][2].shape[1]+15,15,"Patches count:", fontsize=20,weight='bold')
+    ax.text(dataset[ids][2].shape[1]+15,50,"  "+id_to_name[0]+": "+str(count[0]), fontsize=20)
+    ax.text(dataset[ids][2].shape[1]+15,85,"  "+id_to_name[1]+": "+str(count[1]), fontsize=20)
+    ax.text(dataset[ids][2].shape[1]+15,120,"  "+id_to_name[2]+": "+str(count[2]), fontsize=20)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    if(true_image_label == final_image_label):
+        for axis in ['top', 'bottom', 'left', 'right']:
+            ax.spines[axis].set_linewidth(8)  # change width
+            ax.spines[axis].set_color('green')    # change color
+    else:
+        for axis in ['top', 'bottom', 'left', 'right']:
+            ax.spines[axis].set_linewidth(8)  # change width
+            ax.spines[axis].set_color('red')    # change color
+    plt.savefig("tmp.png")
+    plt.close(fig)
 
 def plot_classification_prob(dataset, idx,train_cm,th):
     
@@ -360,40 +462,102 @@ autoencoder.load_state_dict(torch.load(os.path.join(models_dir,str(mse_weight)+"
 autoencoder.eval()
 
 def on_trackbar1(val):
+    global ids
     ids = val
-    cv2.imshow("Classifier",test_dataset[ids][2])
+    cv2.imshow("Classifier",dataset[ids][2])
 
 def on_trackbar2(val):
+    global th
     th = val
+
+def on_trackbar3(val):
+    global type_test
+    type_test = val
+
+def on_trackbar4(val):
+    global selector_dataset  
+    selector_dataset = val
+    menu_copy = np.copy(menu)
+    text=""
+    global dataset
+    if(selector_dataset  == 0):
+        text = "Train"
+        
+        dataset = train_dataset
+        
+    elif(selector_dataset  == 1):
+        text="Validation"
+        
+        dataset = val_dataset
+    else:
+        text="Test"
+        
+        dataset=test_dataset
+        
+    menu_copy = cv2.putText(menu_copy, text, org, font, 
+                    fontScale, color, thickness, cv2.LINE_AA)
+    cv2.imshow("MENU",menu_copy)
+
+
+font = cv2.FONT_HERSHEY_SIMPLEX
+org = (50, 50)
+fontScale = 1
+color = (255, 0, 0)
+thickness = 2
+selector_dataset = 0
 ids = 0
 th = 2
-cv2.namedWindow("Classifier",cv2.WINDOW_FREERATIO)
-cv2.createTrackbar("Sample ID", "Classifier" , 0, len(test_dataset)-1, on_trackbar1)
-cv2.createTrackbar("Threshold", "Classifier" , 0, 40, on_trackbar2)
+type_test=0
+dataset = train_dataset
 
 
+menu = np.zeros((1000,1000),np.float32)
 
-on_trackbar1(0)   
-key = 0
 while(True):
+    
+    cv2.namedWindow("MENU",cv2.WINDOW_FREERATIO)
+    on_trackbar4(selector_dataset)
+    cv2.createTrackbar("Dataset", "MENU" , selector_dataset, 2, on_trackbar4)
     key = cv2.waitKey(0)
-    if key == 27:
+
+    if(key==27):
         cv2.destroyAllWindows()
-        break;
-    else:
-        plot_classification_prob(test_dataset, ids,cm,th)
-        result = cv2.imread("tmp.png")
-        scale_percent = 50 # percent of original size
-        width = int(result.shape[1] * scale_percent / 100)
-        height = int(result.shape[0] * scale_percent / 100)
-        dim = (width, height)
-        # resize image
-        result = cv2.resize(result, dim, interpolation = cv2.INTER_AREA)
-        cv2.namedWindow("RESULT",cv2.WINDOW_FREERATIO)
-        cv2.imshow("RESULT",result)
+        break
+        
+    
+    cv2.destroyWindow("MENU")
+    cv2.namedWindow("Classifier",cv2.WINDOW_FREERATIO)
+    cv2.createTrackbar("Sample ID", "Classifier" , 0, len(dataset)-1, on_trackbar1)
+    cv2.createTrackbar("Threshold", "Classifier" , 0, 40, on_trackbar2)
+    cv2.createTrackbar("Weight?", "Classifier" , 0, 1, on_trackbar3)
+    on_trackbar1(0)   
+    key = 0
+
+
+
+    while(True):
         key = cv2.waitKey(0)
         if key == 27:
             cv2.destroyAllWindows()
             break;
         else:
-            cv2.destroyWindow("RESULT")
+            if(type_test==0):
+                plot_classification(dataset, ids)
+            else:
+                plot_classification_prob(dataset, ids,cm,th)
+
+            result = cv2.imread("tmp.png")
+            scale_percent = 50 # percent of original size
+            width = int(result.shape[1] * scale_percent / 100)
+            height = int(result.shape[0] * scale_percent / 100)
+            dim = (width, height)
+            # resize image
+            result = cv2.resize(result, dim, interpolation = cv2.INTER_AREA)
+            cv2.namedWindow("RESULT",cv2.WINDOW_FREERATIO)
+            cv2.imshow("RESULT",result)
+            key = cv2.waitKey(0)
+            if key == 27:
+                cv2.destroyAllWindows()
+                break;
+            else:
+                cv2.destroyWindow("RESULT")
