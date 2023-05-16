@@ -1,10 +1,7 @@
 ###################MEMORY###################
 import os
 import gc
-import urllib.request
-import zipfile
 import json
-import gdown
 
 ###################DATASET###################
 from sklearn.model_selection import train_test_split
@@ -14,10 +11,10 @@ from torch.autograd import Variable
 
 ###################IMAGE###################
 import cv2
-from PIL import Image
+
 
 ###################PLOTTING###################
-from sklearn.metrics import confusion_matrix
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sn
@@ -32,9 +29,6 @@ from torchsummary import summary
 import numpy as np
 from collections import Counter
 
-###################EXTRA###################
-from tqdm import tqdm,trange
-
 ###################MEMORY SETTINGS###################
 
 save_dir_splitted = "" #location where to save the preprocessed dataset
@@ -42,31 +36,12 @@ data_dir = "" #location where the preprocessed dataset is (in general = save_dir
 models_dir ="" #the resuls will be saved here
 
 
-
-###################DATASETS SETTINGS###################
-patch_size = 128 #dimension of each patch: i.e. a image patch_size x patch_size
-n_samples_train = 40 #number of patches for each image the train dataset
-n_samples_valtest = 40 #number of patches for each image in the validation/test set
-
-grayscale= False #return grayscale image
-fft = False #return the fft of the image
-
-LOAD_DATASET = True #load a preprocessed dataset
-DATASET_ALREADY_DOWNLOADED = True #the file zip containing the dataset is already downloaded?
-DATASET_ALREADY_UNZIPPED = True #the file zip containing the dataset is already unzipped?
-
-
-
 ###################TRAINING SETTINGS###################
 
-noise_amount = 2 #sigma of the noise added during training to the images
 mse_weight = 50 #weight of the MSE loss during the training: i.e. LOSS = Cross Entropy + mse_weight x MSE
 
 
-th = 2 #threshold for the prediction in case of sum of the probability
-
 ###################GENERAL SETTINGS###################
-SAVE_FIG = True #do you want save the plots into a image file?
 SEED = 42
 np.random.seed(SEED) 
 
