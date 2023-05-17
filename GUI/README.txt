@@ -1,7 +1,8 @@
 COMANDI:
  
 MENU: 
-1)puoi selezionare il dataset e se usare o meno la versione che considera i weight
+1)puoi selezionare il dataset
+
 2)ESC->chiude tutto
 
 CLASSIFIER:
