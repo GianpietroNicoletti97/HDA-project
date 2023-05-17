@@ -122,7 +122,7 @@ with open(test_labels_dir) as f:
 
 
 test_dataset = HDAdatasetPatches(test_dir,test_dir_patches,test_labels,train = False,
-                          grayscale=grayscale,fft=fft)
+                          grayscale=False,fft=False)
 
 ### VALIDATION DATASET
 val_dir = os.path.join(data_dir,"val","images")#images
@@ -132,7 +132,7 @@ with open(val_labels_dir) as f:
     val_labels = json.load(f)#labels
 
 val_dataset = HDAdatasetPatches(val_dir,val_dir_patches,val_labels,train = False,
-                          grayscale=grayscale,fft=fft)
+                          grayscale=False,fft=False)
 
 ### TRAIN DATASET
 train_dir = os.path.join(data_dir,"train","images")#images
@@ -142,7 +142,7 @@ with open(train_labels_dir) as f:
     train_labels = json.load(f)#labels
 
 train_dataset = HDAdatasetPatches(train_dir,train_dir_patches,train_labels,train = False,
-                          grayscale=grayscale,fft=fft)
+                          grayscale=False,fft=False)
 
 classes = ["CLL", "FL", "MCL"]
 id_to_name = {0:"CLL",1:"FL",2:"MCL"}
@@ -479,10 +479,15 @@ org = (50, 50)
 fontScale = 1
 color = (255, 0, 0)
 thickness = 2
+global selector_dataset
 selector_dataset = 0
+global ids
 ids = 0
+global th
 th = 2
+global type_test
 type_test=0
+global dataset
 dataset = train_dataset
 
 
@@ -502,9 +507,9 @@ while(True):
     
     cv2.destroyWindow("MENU")
     cv2.namedWindow("Classifier",cv2.WINDOW_FREERATIO)
-    cv2.createTrackbar("Sample ID", "Classifier" , 0, len(dataset)-1, on_trackbar1)
-    cv2.createTrackbar("Threshold", "Classifier" , 0, 40, on_trackbar2)
-    cv2.createTrackbar("Weight?", "Classifier" , 0, 1, on_trackbar3)
+    cv2.createTrackbar("Sample ID", "Classifier" , ids, len(dataset)-1, on_trackbar1)
+    cv2.createTrackbar("Threshold", "Classifier" , th, 40, on_trackbar2)
+    cv2.createTrackbar("Weight?", "Classifier" , type_test, 1, on_trackbar3)
     on_trackbar1(0)   
     key = 0
 
