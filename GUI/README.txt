@@ -1,11 +1,10 @@
-COMANDI:
- 
-MENU: 
-1)puoi selezionare il dataset
+GUI REFERENCES:
 
-2)ESC->chiude tutto
+"MENU" window:
+1)select the dataset and press ANY KEY to confirm
+2)press ESC to close
 
-CLASSIFIER:
-1)usa le barre per selezionare i paramentri
-2)premere qualsiasi tasto -> se sei nella finestra di selezione fa partire la predizione e apre il risultato, se c'è una finestra di predizione aperta la chiude
-3)premere ESC -> torna al menu
+"Classifier" window:
+1)select the image and the paramenters
+2)press any key->if the only window opened is "Classifier" shows the result on the selected image, if there is the "RESULT" window opened it close the "RESULT"
+3)press ESC -> go back to "MENU"
