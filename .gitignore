@@ -2,7 +2,10 @@
 */.ipynb_checkpoints/*
 */.ipynb_checkpoints/
 /.ipynb_checkpoints/
-
+/GUI/train
+/GUI/test
+/GUI/val
+/GUI/tmp.png
 #dataset files
 *.zip
 *.npy
