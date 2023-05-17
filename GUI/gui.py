@@ -439,7 +439,9 @@ autoencoder.eval()
 def on_trackbar1(val):
     global ids
     ids = val
-    cv2.imshow("Classifier",dataset[ids][2])
+    max_size = max(dataset[ids][2].shape[0],dataset[ids][2].shape[1])
+    border = np.zeros((max_size,max_size))
+    cv2.imshow("Classifier",cv2.cvtColor(dataset[ids][2], cv2.COLOR_RGB2BGR))
 
 def on_trackbar2(val):
     global th
@@ -510,7 +512,7 @@ while(True):
     cv2.createTrackbar("Sample ID", "Classifier" , ids, len(dataset)-1, on_trackbar1)
     cv2.createTrackbar("Threshold", "Classifier" , th, 40, on_trackbar2)
     cv2.createTrackbar("Weight?", "Classifier" , type_test, 1, on_trackbar3)
-    on_trackbar1(0)   
+    on_trackbar1(ids)   
     key = 0
 
 
