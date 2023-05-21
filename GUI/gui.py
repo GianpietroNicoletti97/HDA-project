@@ -521,6 +521,7 @@ while(True):
         key = cv2.waitKey(0)
         if key == 27:
             cv2.destroyAllWindows()
+            ids = 0
             break;
         else:
             if(type_test==0):
@@ -540,6 +541,7 @@ while(True):
             key = cv2.waitKey(0)
             if key == 27:
                 cv2.destroyAllWindows()
+                ids = 0
                 break;
             else:
                 cv2.destroyWindow("RESULT")
