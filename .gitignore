@@ -25,3 +25,7 @@
 #dataset folder
 /dataset/splitted
 /dataset/unsplitted
+
+#ignored
+!report/HDA_final_project_report.pdf
+!report/HDA_final_project_report.zip
